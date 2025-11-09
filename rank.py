@@ -47,7 +47,7 @@ elif word:
         for i in range(len(ranks))
     ]
 
-    # Adjusted factorial expressions and numeric values (for tidy table)
+    
     adjusted_factorials = []
     adjusted_values = []
     for i in range(len(letters)):
@@ -82,6 +82,32 @@ elif word:
     st.dataframe(df, use_container_width=True)
 
     st.markdown(f"### Rank = **{total_rank}**")
+    st.write("""
+### ✅ Tidy Method
+
+1. For each position *k*, count how many letters to the right are smaller than the current letter.
+
+2. From position *k* to the end, record the frequencies of all letters (including the letter at *k*).  
+   Here:
+   - nₖ = total number of letters from position *k* to the end  
+   - fⱼ = frequency of the *j*-th distinct letter in that segment  
+   These frequencies form the denominator in the adjusted factorial.
+""")
+
+    st.latex(r"""
+\text{adjusted factorial}(k)
+= \frac{(n_k - 1)!}{\prod_j (f_j!)}
+""")
+
+    st.write("""
+3. Multiply the two quantities to get the contribution at position *k*.
+
+4. Sum all contributions and add 1 to obtain the dictionary rank.
+
+This avoids explicit case-by-case substitution and uses a clean combinatorial multiplier at each position.
+""")
+
+
 
     # -------------------- CLASSIC EXPLANATION --------------------
     st.markdown("---")
@@ -96,20 +122,44 @@ elif word:
 
         smaller_letters = sorted(set(c for c in right_slice if c < current))
 
-        # Expander title (omit "smaller: none")
         title = (
-            f"Step {i+1} — Letter {current}"
+            f"Step {i+1} — Letter {current} (No Small Letters to the Right)"
             if not smaller_letters
-            else f"Step {i+1} — Letter {current} (smaller: {', '.join(smaller_letters)})"
+            else f"Step {i+1} — Letter {current} (smaller letters: {', '.join(smaller_letters)})"
         )
 
         with st.expander(title):
             
-            all_letters_desc = ", ".join(sorted(right_slice))
+            all_letters_desc = "".join(sorted(right_slice))
             st.markdown(
                 f"**Position {i+1}:** Current letter is **{current}**.  \n"
-                f"Including this position, available letters: **{all_letters_desc}**."
+                # f"Including this position, available letters: **{all_letters_desc}**."
             )
+
+            counts_remaining_letters = Counter(all_letters_desc)
+                
+            subscript_map = str.maketrans("0123456789", "₀₁₂₃₄₅₆₇₈₉")
+                
+            formatted = []
+            for letter in sorted(counts_remaining_letters.keys()):
+                    c = counts_remaining_letters[letter]
+                    if c > 1:
+                        formatted.append(f"{letter}{str(c).translate(subscript_map)}")
+                    else:
+                        formatted.append(letter)
+                
+            display_str = " ".join(formatted)
+                
+            st.markdown(
+    f"""
+    <div style="font-size: 24px; font-weight: 600;">
+        <span style="color: red;">Starting at this letter and extending through all letters to its right: →</span>
+        <code>{display_str}</code>
+    </div>
+    """,
+    unsafe_allow_html=True
+)    
+            
 
             freq_html = """
             <table style='border-collapse: collapse; font-size: 1.05em;'>
@@ -129,7 +179,7 @@ elif word:
                     f"{counts[ch]}</td>"
                 )
             freq_html += "</tr></table>"
-            st.markdown("**Letter Frequencies:**", unsafe_allow_html=True)
+            st.markdown("Frequency Table:", unsafe_allow_html=True)
             st.markdown(freq_html, unsafe_allow_html=True)
 
             
@@ -171,11 +221,38 @@ elif word:
                 factor = common_value // actual_value if actual_value else 1
 
                 st.markdown(f"### If **{smaller}** is placed instead of **{current}**:")
-                # remaining_letters_str = "".join(sorted(temp_counts.elements()))
-                # st.markdown(
-                #     f"**If {smaller} were placed here instead of {current}:**  \n"
-                #     f"Remaining letters → `{remaining_letters_str}`"
-                # )
+                remaining_letters_str = "".join(sorted(temp.elements()))
+
+                # -----------------------------------------
+                # Count and format with subscripts
+                # -----------------------------------------
+                counts_remaining_letters = Counter(remaining_letters_str)
+                
+                subscript_map = str.maketrans("0123456789", "₀₁₂₃₄₅₆₇₈₉")
+                
+                formatted = []
+                for letter in sorted(counts_remaining_letters.keys()):
+                    c = counts_remaining_letters[letter]
+                    if c > 1:
+                        formatted.append(f"{letter}{str(c).translate(subscript_map)}")
+                    else:
+                        formatted.append(letter)
+                
+                display_str = " ".join(formatted)
+                
+                # -----------------------------------------
+                # Display enlarged in Streamlit
+                # -----------------------------------------
+                st.markdown(
+    f"""
+    <div style="font-size: 24px; font-weight: 600;">
+        <span style="color: blue;">Remaining letters →</span>
+        <code>{display_str}</code>
+    </div>
+    """,
+    unsafe_allow_html=True
+)
+
             
                 count = factor * (math.factorial(remaining) // (common_value if common_value else 1))
                 
@@ -231,12 +308,10 @@ elif word:
                         final_latex_expr += fr"{subtotal}"
                 else:
                     if common_value > 1:
-                        # final_latex_expr += fr" \times \frac{{{remaining}!}}{{{common_fact}}} = "
+                        
                         final_latex_expr += fr"{multiplier} \times \frac{{{remaining}!}}{{{common_fact}}} = "
                         final_latex_expr += fr"{subtotal}"
                         
-                        # final_latex_expr += fr"\frac{{{remaining}!}}{{{common_fact}}} = "
-                        # final_latex_expr += fr"{subtotal}"
                     else:
                         
                         final_latex_expr += fr"{remaining}! = "
