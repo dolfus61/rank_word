@@ -94,7 +94,6 @@ elif word:
         right_slice = letters[i:]
         counts = Counter(right_slice)
 
-        # Use UNIQUE smaller letters (fixes the duplicate 'A' issue)
         smaller_letters = sorted(set(c for c in right_slice if c < current))
 
         # Expander title (omit "smaller: none")
@@ -105,14 +104,13 @@ elif word:
         )
 
         with st.expander(title):
-            # Always show the pool and frequencies
+            
             all_letters_desc = ", ".join(sorted(right_slice))
             st.markdown(
                 f"**Position {i+1}:** Current letter is **{current}**.  \n"
-                f"From this position onward, available letters: **{all_letters_desc}**."
+                f"Including this position, available letters: **{all_letters_desc}**."
             )
 
-            # Frequency Table (original look)
             freq_html = """
             <table style='border-collapse: collapse; font-size: 1.05em;'>
               <tr>
@@ -134,17 +132,17 @@ elif word:
             st.markdown("**Letter Frequencies:**", unsafe_allow_html=True)
             st.markdown(freq_html, unsafe_allow_html=True)
 
-            # Common denominator as product of factorials of repeated letters (alphabetical)
+            
             common_items = [(ch, counts[ch]) for ch in sorted(counts) if counts[ch] > 1]
-            print(common_items)
+            
             common_expr = " × ".join([f"{ch}({v}!)" for ch, v in common_items]) if common_items else "1"
-            # For LaTeX denominator keep factorials (no direct numbers)
+            
             common_fact = " \\times ".join([f"{v}!" for _, v in common_items]) if common_items else "1"
-            # Numeric value (shown separately in text; not in LaTeX denominator)
+            
             common_value = math.prod(math.factorial(v) for _, v in common_items) if common_items else 1
 
             if common_value > 1:
-                st.markdown("**Common_denominator:**")
+                st.markdown("**common_denominator:**")
                 st.markdown(f"`{common_expr}`")
 
             if not smaller_letters:
@@ -173,12 +171,14 @@ elif word:
                 factor = common_value // actual_value if actual_value else 1
 
                 st.markdown(f"### If **{smaller}** is placed instead of **{current}**:")
-                
-
-                # Numeric count (computed using common_value to avoid recomputing denominators)
+                remaining_letters_str = "".join(sorted(temp_counts.elements()))
+                st.markdown(
+                    f"**If {smaller} were placed here instead of {current}:**  \n"
+                    f"Remaining letters → `{remaining_letters_str}`"
+                )
+            
                 count = factor * (math.factorial(remaining) // (common_value if common_value else 1))
-                # LaTeX: keep factorials in denominators
-                # factor × (remaining! / common_fact) = remaining! / actual_fact
+                
                 
                 if factor > 1:
                     multiplier += factor
