@@ -219,8 +219,8 @@ elif word:
                 final_latex_expr = final_latex_expr[:-1]
             if counter_multiplier == 1:
                 if multiplier == 1:
-                    if final_latex_expr.startswith("\left(1"):
-                        final_latex_expr = final_latex_expr[7:]
+                    # if final_latex_expr.startswith("\left(1"):
+                    #     final_latex_expr = final_latex_expr[7:]
                     if common_value > 1:
                         
                         final_latex_expr += fr"\frac{{{remaining}!}}{{{common_fact}}} = "
