@@ -231,7 +231,7 @@ elif word:
                         final_latex_expr += fr"{subtotal}"
                 else:
                     if common_value > 1:
-                        final_latex_expr += fr" \times \frac{{{remaining}!}}{{{common_fact}}} = "
+                        # final_latex_expr += fr" \times \frac{{{remaining}!}}{{{common_fact}}} = "
                         final_latex_expr += fr"{multiplier} \times \frac{{{remaining}!}}{{{common_fact}}} = "
                         final_latex_expr += fr"{subtotal}"
                         
