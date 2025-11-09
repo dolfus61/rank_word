@@ -156,6 +156,7 @@ elif word:
             final_latex_expr = r"\left("
             
             multiplier = 0
+            counter_multiplier = 0
             
             for smaller in smaller_letters:
                 temp = Counter(right_slice)
@@ -172,8 +173,7 @@ elif word:
                 factor = common_value // actual_value if actual_value else 1
 
                 st.markdown(f"### If **{smaller}** is placed instead of **{current}**:")
-                # st.markdown(f"- Actual denominator: `{actual_expr}` = **{actual_value}**")
-                # st.markdown(f"- Factor = common / actual = {common_value} / {actual_value} = **{factor}**")
+                
 
                 # Numeric count (computed using common_value to avoid recomputing denominators)
                 count = factor * (math.factorial(remaining) // (common_value if common_value else 1))
@@ -182,6 +182,7 @@ elif word:
                 
                 if factor > 1:
                     multiplier += factor
+                    counter_multiplier += 1
                     if actual_value > 1:
                         latex_expr = (
                         f"{factor} \\times \\frac{{{remaining}!}}{{{common_fact}}} = "
@@ -198,6 +199,7 @@ elif word:
                         final_latex_expr += f"{factor}+"    
                 else:
                     multiplier += 1
+                    counter_multiplier += 1
                     if actual_value > 1:
                         latex_expr = (
                         f"\\frac{{{remaining}!}}{{{actual_fact}}} = "
@@ -215,15 +217,15 @@ elif word:
 
             if final_latex_expr.endswith("+"):
                 final_latex_expr = final_latex_expr[:-1]
-            if multiplier == 1:
+            if counter_multiplier == 1:
                 if final_latex_expr.startswith("\left(1"):
                     final_latex_expr = final_latex_expr[7:]
                 if common_value > 1:
-                    # final_latex_expr += fr"\right) \times \frac{{{remaining}!}}{{{common_fact}}} = "
+                    
                     final_latex_expr += fr"\frac{{{remaining}!}}{{{common_fact}}} = "
                     final_latex_expr += fr"{subtotal}"
                 else:
-                    # final_latex_expr += fr"\right) \times {remaining}! = "
+                    
                     final_latex_expr += fr"{remaining}! = "
                     final_latex_expr += fr"{subtotal}"
             else:
@@ -253,29 +255,6 @@ elif word:
 
 
             st.latex(final_latex_expr)
-#             st.markdown(
-#     f"""
-#     <div style="
-#         backdrop-filter: blur(16px);
-#         -webkit-backdrop-filter: blur(16px);
-#         background: rgba(30, 30, 30, 0.55);
-#         border: 1px solid rgba(255, 255, 255, 0.12);
-#         padding: 16px 22px;
-#         margin: 18px 0;
-#         border-radius: 14px;
-#         font-size: 22px;
-#         font-weight: 300;
-#         font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display',
-#                      'SF Pro Text', 'Segoe UI', Roboto, sans-serif;
-#         color: #f5f5f7;
-#         box-shadow: 0 6px 18px rgba(0,0,0,0.45);
-#         letter-spacing: 0.2px;
-#     ">
-#         Subtotal contribution at position {i+1}: {subtotal} words
-#     </div>
-#     """,
-#     unsafe_allow_html=True
-# )
 
             st.markdown(
     f"""
