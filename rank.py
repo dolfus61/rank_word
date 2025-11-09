@@ -81,6 +81,8 @@ elif word:
     st.markdown("### 📋 Tidy Factorial Table")
     st.dataframe(df, use_container_width=True)
 
+    st.markdown(f"### Rank = **{total_rank}**")
+
     # -------------------- CLASSIC EXPLANATION --------------------
     st.markdown("---")
     st.subheader("🧠 Classic Step-by-Step Logic (Old School Method)")
@@ -305,7 +307,7 @@ elif word:
 
     # -------------------- Final Rank Summary --------------------
     st.markdown(f"### ➕ Total words before **{word}** = **{total_before}**")
-    st.markdown(f"### 🏆 Final Rank = **{total_before + 1}**")
+    st.markdown(f"### Rank = **{total_before + 1}**")
 
 else:
     st.info("Enter a word above to see its rank table and detailed explanation.")
