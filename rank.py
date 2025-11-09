@@ -171,11 +171,11 @@ elif word:
                 factor = common_value // actual_value if actual_value else 1
 
                 st.markdown(f"### If **{smaller}** is placed instead of **{current}**:")
-                remaining_letters_str = "".join(sorted(temp_counts.elements()))
-                st.markdown(
-                    f"**If {smaller} were placed here instead of {current}:**  \n"
-                    f"Remaining letters → `{remaining_letters_str}`"
-                )
+                # remaining_letters_str = "".join(sorted(temp_counts.elements()))
+                # st.markdown(
+                #     f"**If {smaller} were placed here instead of {current}:**  \n"
+                #     f"Remaining letters → `{remaining_letters_str}`"
+                # )
             
                 count = factor * (math.factorial(remaining) // (common_value if common_value else 1))
                 
