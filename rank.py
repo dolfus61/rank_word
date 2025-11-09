@@ -28,7 +28,7 @@ with st.sidebar:
     st.caption("Built for conceptual clarity by ABM(Abhishek Bansal)")
 
 # -------------------- Main Input --------------------
-word = st.text_input("🔤 Enter a word:", value="chemistry").strip().upper()
+word = st.text_input("🔤 Enter a word:", value="anuradha").strip().upper()
 
 # -------------------- Validation --------------------
 if not re.fullmatch(r"[A-Z]+", word):
@@ -87,25 +87,26 @@ elif word:
 
 1. For each position *k*, count how many letters to the right are smaller than the current letter.
 
-2. From position *k* to the end, record the frequencies of all letters (including the letter at *k*).  
-   Here:
-   - nₖ = total number of letters from position *k* to the end  
-   - fⱼ = frequency of the *j*-th distinct letter in that segment  
-   These frequencies form the denominator in the adjusted factorial.
-""")
+2. From position *k* to the end, record the frequencies of all letters (including the letter at *k*). """)
+    
+    st.write("""These frequencies form the denominator in the adjusted factorial.""")
 
     st.latex(r"""
 \text{adjusted factorial}(k)
-= \frac{(n_k - 1)!}{\prod_j (f_j!)}
+= \frac{(n_k - 1)!}{\prod_r (f_r!)}
+""")
+
+    st.latex(r"""
+\begin{aligned}
+n_k &:= \text{ total number of letters from position } k \text{ to the end} \\
+f_r &:= \text{ frequency of the } r\text{-th distinct letter in that segment}
+\end{aligned}
 """)
 
     st.write("""
 3. Multiply the two quantities to get the contribution at position *k*.
 
-4. Sum all contributions and add 1 to obtain the dictionary rank.
-
-This avoids explicit case-by-case substitution and uses a clean combinatorial multiplier at each position.
-""")
+4. Sum all contributions and add 1 to obtain the dictionary rank.""")
 
 
 
