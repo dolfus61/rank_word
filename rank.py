@@ -28,7 +28,7 @@ with st.sidebar:
     st.caption("Built for conceptual clarity by ABM(Abhishek Bansal)")
 
 # -------------------- Main Input --------------------
-word = st.text_input("🔤 Enter a word:", value="mathematics").strip().upper()
+word = st.text_input("🔤 Enter a word:", value="chemistry").strip().upper()
 
 # -------------------- Validation --------------------
 if not re.fullmatch(r"[A-Z]+", word):
